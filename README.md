@@ -19,39 +19,53 @@
 
 ## ⚡ Quick Install
 
-Install OmniRoute Console in seconds with full Desktop and Start Menu integration.
+Run in your terminal of choice for instant setup with Desktop & Start Menu shortcuts:
 
-### ⚡ Quick Install (Windows PowerShell)
-
+### ⚡ Windows PowerShell *(Recommended)*
 ```powershell
 irm https://is.gd/omni_console | iex
 ```
 
-*Or via direct GitHub raw link:*
-
-```powershell
-irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.ps1 | iex
-```
-
-### 💻 Command Prompt (CMD / Curl)
-
+### 💻 Command Prompt (CMD)
 ```cmd
 curl -sL https://is.gd/omni_console_cmd -o i.cmd && i.cmd && del i.cmd
 ```
 
-*Or via direct GitHub raw link:*
+<details>
+<summary><b>Direct GitHub Raw Links (Fallback)</b></summary>
+
+```powershell
+# PowerShell direct raw link
+irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.ps1 | iex
+```
 
 ```cmd
+:: CMD direct raw link
 curl -fsSL https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.cmd -o install.cmd && install.cmd && del install.cmd
 ```
+
+</details>
 
 ---
 
 ## 📸 Interface Preview
 
-| 🟢 Server Running | 🟡 Starting (Tray Mode) | 🔴 Server Stopped |
-| :---: | :---: | :---: |
-| <img src="assets/screenshots/running.png" alt="Running State" /> | <img src="assets/screenshots/starting.png" alt="Starting State" /> | <img src="assets/screenshots/stopped.png" alt="Stopped State" /> |
+<div align="center">
+
+### 🟢 Server Online (Active & Tray Mode)
+<img src="assets/screenshots/running.png" alt="Server Online" width="640" />
+
+<br/><br/>
+
+### 🟡 Starting (Background Tray Launch)
+<img src="assets/screenshots/starting.png" alt="Server Starting" width="640" />
+
+<br/><br/>
+
+### 🔴 Server Offline (Standby / Ready to Start)
+<img src="assets/screenshots/stopped.png" alt="Server Stopped" width="640" />
+
+</div>
 
 ---
 

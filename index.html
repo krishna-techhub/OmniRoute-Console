@@ -241,35 +241,58 @@
       font-size: 1rem;
     }
 
-    .screenshot-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+    .screenshot-vertical-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      max-width: 680px;
+      margin: 0 auto;
     }
 
-    .shot-card {
+    .shot-card-vert {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
       transition: transform 0.25s ease, border-color 0.25s ease;
-      display: flex;
-      flex-direction: column;
     }
 
-    .shot-card:hover {
-      transform: translateY(-4px);
-      border-color: #384260;
+    .shot-card-vert:hover {
+      transform: translateY(-3px);
+      border-color: #3b4566;
     }
 
-    .shot-header {
-      padding: 14px 18px;
+    .shot-card-vert .shot-header {
+      padding: 16px 22px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--border);
       background: var(--surface-elevated);
+    }
+
+    .shot-card-vert .shot-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .shot-card-vert .shot-body {
+      padding: 24px;
+      background: #06070c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shot-card-vert .shot-img {
+      width: 100%;
+      max-width: 630px;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
     }
 
     .status-tag {
@@ -446,10 +469,10 @@
       <h2 class="section-title">Visual Interface States</h2>
       <p class="section-desc">Clean, native Windows dialog aesthetic with instantaneous TCP port 20128 status probing.</p>
 
-      <div class="screenshot-grid">
-        <div class="shot-card">
+      <div class="screenshot-vertical-list">
+        <div class="shot-card-vert">
           <div class="shot-header">
-            <span class="shot-title">Server Online</span>
+            <span class="shot-title">🟢 Server Online (Active & Tray Mode)</span>
             <span class="status-tag running">Running</span>
           </div>
           <div class="shot-body">
@@ -457,9 +480,9 @@
           </div>
         </div>
 
-        <div class="shot-card">
+        <div class="shot-card-vert">
           <div class="shot-header">
-            <span class="shot-title">Connecting Probe</span>
+            <span class="shot-title">🟡 Connecting Probe (Background Start)</span>
             <span class="status-tag starting">Starting</span>
           </div>
           <div class="shot-body">
@@ -467,9 +490,9 @@
           </div>
         </div>
 
-        <div class="shot-card">
+        <div class="shot-card-vert">
           <div class="shot-header">
-            <span class="shot-title">Offline Standby</span>
+            <span class="shot-title">🔴 Offline Standby (Ready to Start)</span>
             <span class="status-tag stopped">Stopped</span>
           </div>
           <div class="shot-body">
