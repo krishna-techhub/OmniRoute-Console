@@ -47,6 +47,20 @@ curl -fsSL https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/m
 
 ---
 
+## 📸 Interface Preview
+
+<p align="center">
+  <img src="assets/screenshots/running.png" alt="OmniRoute Console - Running State" width="500" style="border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
+</p>
+
+<p align="center">
+  <img src="assets/screenshots/starting.png" alt="OmniRoute Console - Starting State" width="380" style="border-radius: 8px;" />
+  &nbsp;&nbsp;
+  <img src="assets/screenshots/stopped.png" alt="OmniRoute Console - Stopped State" width="380" style="border-radius: 8px;" />
+</p>
+
+---
+
 ## ✨ Features
 
 - 🔕 **Zero Console Windows**: Launches server silently in background with Windows System Tray (`omniroute serve --tray`).
