@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniRoute Console — Modern Windows Manager & Tray Controller</title>
+  <link rel="icon" href="assets/omniroute.ico" type="image/x-icon">
+  <style>
+    :root {
+      --bg: #0c0e14;
+      --card: #151823;
+      --card-border: #242938;
+      --brand: #6366f1;
+      --brand-hover: #4f46e5;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --code-bg: #1e2230;
+      --green: #10b981;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 820px;
+      width: 100%;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 16px;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      background: #1c2132;
+      border: 1px solid var(--card-border);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      text-decoration: none;
+    }
+    .install-box {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    .install-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #a5b4fc;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .command-row {
+      display: flex;
+      align-items: center;
+      background: var(--code-bg);
+      border: 1px solid #2e354a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      position: relative;
+      margin-bottom: 14px;
+    }
+    .command-code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      white-space: nowrap;
+      flex: 1;
+      padding-right: 80px;
+    }
+    .copy-btn {
+      position: absolute;
+      right: 10px;
+      background: var(--brand);
+      color: #ffffff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--brand-hover);
+    }
+    .copy-btn.copied {
+      background: var(--green);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .feature-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #f8fafc;
+    }
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.85rem;
+      border-top: 1px solid #1e2433;
+      padding-top: 25px;
+      margin-top: auto;
+    }
+    footer a {
+      color: #a5b4fc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="assets/icon.svg" alt="OmniRoute Console Logo" class="logo">
+      <h1>OmniRoute Console</h1>
+      <p class="subtitle">Lightweight Windows GUI Manager, System Tray Controller & One-Line Installer</p>
+
+      <div class="badges">
+        <span class="badge">Windows 10 / 11</span>
+        <span class="badge">Zero Dependencies</span>
+        <span class="badge">System Tray</span>
+        <a href="https://github.com/krishna-techhub/OmniRoute-Console" class="badge" target="_blank">⭐ GitHub Repo</a>
+      </div>
+    </header>
+
+    <div class="install-box">
+      <div class="install-title">⚡ 1-Line PowerShell Installation (Recommended)</div>
+      <div class="command-row">
+        <div class="command-code" id="cmd1">irm https://is.gd/omni_console | iex</div>
+        <button class="copy-btn" onclick="copyCode('cmd1', this)">Copy</button>
+      </div>
+
+      <div class="install-title" style="margin-top: 18px;">💻 Command Prompt (CMD / curl)</div>
+      <div class="command-row">
+        <div class="command-code" id="cmd2">curl -fsSL https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</div>
+        <button class="copy-btn" onclick="copyCode('cmd2', this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="feature-card">
+        <h3>🔕 Silent Background Tray</h3>
+        <p>Runs OmniRoute server cleanly detached with Windows tray presence (<code>omniroute serve --tray</code>). No annoying black console windows.</p>
+      </div>
+      <div class="feature-card">
+        <h3>⚡ Real-time TCP Probe</h3>
+        <p>Instant non-blocking loopback checking on port 20128 confirms server online/offline status in milliseconds.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🔄 Control Actions</h3>
+        <p>One-click Dashboard launch, safe server restart without orphan processes, and dynamic start/stop toggles.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🎨 High-DPI Native Icon</h3>
+        <p>Multi-resolution ICO embedded directly into the PE executable header for crisp rendering at all Windows DPI scaling levels.</p>
+      </div>
+    </div>
+
+    <footer>
+      <p>OmniRoute Console is open-source under the <a href="LICENSE">MIT License</a>. Created by <a href="https://github.com/krishna-techhub">krishna-techhub</a>.</p>
+    </footer>
+  </div>
+
+  <script>
+    function copyCode(elementId, btn) {
+      const code = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
