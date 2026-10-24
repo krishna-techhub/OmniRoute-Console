@@ -221,6 +221,53 @@
       background: var(--green);
     }
 
+    /* Download Box for Standalone Setup */
+    .download-box {
+      background: #040508;
+      border: 1px solid #1a1e2d;
+      border-radius: 10px;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .download-info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .download-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--brand);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .download-btn:hover {
+      background: #4f46e5;
+      box-shadow: 0 4px 16px var(--brand-glow);
+      transform: translateY(-1px);
+    }
+
     /* Screenshots Section */
     .preview-section {
       margin-bottom: 65px;
@@ -434,8 +481,9 @@
     <!-- Installer Card with Tabs -->
     <div class="install-card">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('powershell', this)">⚡ PowerShell (Recommended)</button>
-        <button class="tab-btn" onclick="switchTab('cmd', this)">💻 Command Prompt (CMD)</button>
+        <button class="tab-btn active" onclick="switchTab('powershell', this)">⚡ PowerShell 1-Liner</button>
+        <button class="tab-btn" onclick="switchTab('cmd', this)">💻 CMD 1-Liner</button>
+        <button class="tab-btn" onclick="switchTab('setup', this)">📦 Setup Wizard (.exe)</button>
         <button class="tab-btn" onclick="switchTab('uninstall', this)">🗑️ Uninstaller</button>
       </div>
 
@@ -453,6 +501,17 @@
           <button class="copy-btn" onclick="copyCode('cmd-cmd', this)">Copy Command</button>
         </div>
         <div class="terminal-hint">For standard Command Prompt (cmd.exe). Automatically fetches installer, executes silently, and cleans up the temporary batch wrapper.</div>
+      </div>
+
+      <div id="tab-setup" class="tab-content">
+        <div class="download-box">
+          <div class="download-info">
+            <h3>OmniRouteConsole-Setup.exe</h3>
+            <p>Standalone Windows GUI Setup Wizard (~150 KB) &bull; Zero external runtimes &bull; Custom install directory &bull; Offline payload</p>
+          </div>
+          <a href="https://github.com/krishna-techhub/OmniRoute-Console/releases/latest/download/OmniRouteConsole-Setup.exe" class="download-btn">⬇️ Download Installer</a>
+        </div>
+        <div class="terminal-hint">Download and double-click to install. Perfect for users who prefer standard Windows setup wizards over CLI commands.</div>
       </div>
 
       <div id="tab-uninstall" class="tab-content">

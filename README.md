@@ -19,14 +19,20 @@
 
 ## ⚡ Quick Install
 
-Run in your terminal of choice for instant setup with Desktop & Start Menu shortcuts:
+Choose your preferred installation method:
 
-### ⚡ Windows PowerShell *(Recommended)*
+### 📦 Standalone Setup Wizard (.exe) *(No Terminal Needed)*
+Download and run the standalone Windows GUI setup wizard:
+👉 **[Download OmniRouteConsole-Setup.exe](https://github.com/krishna-techhub/OmniRoute-Console/releases/latest/download/OmniRouteConsole-Setup.exe)** *(~150 KB, Zero Dependencies, Offline Installer)*
+
+---
+
+### ⚡ Windows PowerShell 1-Liner
 ```powershell
 irm https://is.gd/omni_console | iex
 ```
 
-### 💻 Command Prompt (CMD)
+### 💻 Command Prompt (CMD) 1-Liner
 ```cmd
 curl -sL https://is.gd/omni_console_cmd -o i.cmd && i.cmd && del i.cmd
 ```
@@ -99,11 +105,17 @@ When launched, OmniRoute Console automatically inspects whether the OmniRoute se
 
 OmniRoute Console compiles with zero external dependencies using the Windows built-in C# compiler (`csc.exe`):
 
+### 1. Build Application Executable (`OmniRouteConsole.exe`)
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
 ```
 
-The script builds `OmniRouteConsole.exe` and embeds the high-resolution multi-size icon (`assets/omniroute.ico`).
+### 2. Build Standalone Setup Wizard (`OmniRouteConsole-Setup.exe`)
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
+```
+
+Both binaries embed the high-resolution multi-size icon (`assets/omniroute.ico`), and the setup wizard embeds the complete application payload for 100% offline installation.
 
 ---
 

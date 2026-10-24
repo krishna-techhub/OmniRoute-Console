@@ -21,16 +21,22 @@ jobs:
         run: |
           & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /target:winexe /optimize+ /platform:x64 /win32icon:assets/omniroute.ico /out:OmniRouteConsole.exe src/Program.cs src/LauncherForm.cs src/ServerManager.cs src/UITheme.cs
 
+      - name: Compile Standalone Setup Installer
+        shell: powershell
+        run: |
+          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /target:winexe /optimize+ /platform:x64 /win32icon:assets/omniroute.ico /resource:OmniRouteConsole.exe,OmniRouteConsole.exe /resource:assets/omniroute.ico,omniroute.ico /out:OmniRouteConsole-Setup.exe installer/Program.cs installer/SetupForm.cs
+
       - name: Create Distribution Zip
         shell: powershell
         run: |
-          Compress-Archive -Path OmniRouteConsole.exe, assets/omniroute.ico, LICENSE, README.md -DestinationPath OmniRouteConsole-Windows-x64.zip
+          Compress-Archive -Path OmniRouteConsole.exe, OmniRouteConsole-Setup.exe, assets/omniroute.ico, LICENSE, README.md -DestinationPath OmniRouteConsole-Windows-x64.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             OmniRouteConsole.exe
+            OmniRouteConsole-Setup.exe
             OmniRouteConsole-Windows-x64.zip
           draft: false
           prerelease: false
