@@ -1,11 +1,19 @@
-# 🚀 OmniRoute Console
+<p align="center">
+  <img src="assets/icon.svg" width="128" height="128" alt="OmniRoute Console Logo" />
+</p>
 
-[![Release](https://img.shields.io/github/v/release/krishna-techhub/OmniRoute-Console?color=7571da&logo=github)](https://github.com/krishna-techhub/OmniRoute-Console/releases)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D6?logo=windows)](#)
-[![.NET Framework](https://img.shields.io/badge/.NET-Framework%204.5%2B-512BD4?logo=dotnet)](#)
+<h1 align="center">OmniRoute Console</h1>
 
-Lightweight, native Windows companion launcher & system tray controller for the OmniRoute server (`127.0.0.1:20128`).
+<p align="center">
+  <strong>Lightweight Windows GUI Manager, System Tray Controller & One-Line Installer for OmniRoute Server</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/krishna-techhub/OmniRoute-Console/releases"><img src="https://img.shields.io/github/v/release/krishna-techhub/OmniRoute-Console?color=7571da&logo=github" alt="Release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" /></a>
+  <img src="https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D6?logo=windows" alt="Platform" />
+  <img src="https://img.shields.io/badge/.NET-Framework%204.5%2B-512BD4?logo=dotnet" alt=".NET Framework" />
+</p>
 
 ---
 
