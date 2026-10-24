@@ -28,6 +28,12 @@ irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/ins
 ### 💻 Command Prompt (CMD / Curl)
 
 ```cmd
+curl -sL https://is.gd/omni_console_cmd -o i.cmd && i.cmd && del i.cmd
+```
+
+*Or via direct GitHub raw link:*
+
+```cmd
 curl -fsSL https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.cmd -o install.cmd && install.cmd && del install.cmd
 ```
 
