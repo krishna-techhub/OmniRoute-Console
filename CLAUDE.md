@@ -4,9 +4,9 @@ Native Windows companion launcher and system tray controller for the OmniRoute s
 
 ## Architecture & Modules
 
-- `src/Program.cs` — STAThread entry point with Windows visual styles.
-- `src/LauncherForm.cs` — FixedDialog UI, system tray `NotifyIcon`, right-click `ContextMenuStrip`, auto-close timer, hover cancel, server controls.
-- `src/ServerManager.cs` — Non-blocking TCP loopback latency check (350ms timeout), background update checker, detached tray execution (`omniroute serve --tray`).
+- `src/Program.cs` — STAThread entry point with Win32 Named Mutex (`OmniRouteConsole_SingleInstance_Mutex`), `WM_SHOWME` IPC broadcast, and CLI argument parsing (`--minimized`, `--silent`, `--port <n>`).
+- `src/LauncherForm.cs` — FixedDialog UI, system tray `NotifyIcon`, right-click `ContextMenuStrip`, Crash Guardian watchdog, custom directory picker dialog, auto-close timer, hover cancel, server controls.
+- `src/ServerManager.cs` — Dynamic multi-path `.omniroute` discovery, registry persistence (`HKCU\Software\OmniRouteConsole`), `.env` dynamic port detection, Windows Run registry auto-start, TCP ping latency check, background update checker.
 - `src/UITheme.cs` — Design tokens (Ink, Brand, Muted, Border, Status colors).
 - `installer/Program.cs` — Entry point for standalone Windows setup wizard.
 - `installer/SetupForm.cs` — Standalone setup GUI with embedded binary extraction, shortcut generation, and shell icon cache refresh.
@@ -29,6 +29,12 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1
 powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 ```
 
+Direct Git Bash compilation (without PowerShell):
+```bash
+MSYS2_ARG_CONV_EXCL="*" /c/Windows/Microsoft.NET/Framework64/v4.0.30319/csc.exe /target:winexe /optimize+ /platform:x64 /win32icon:assets\\omniroute.ico /out:bin\\OmniRouteConsole.exe "src\\Program.cs" "src\\UITheme.cs" "src\\ServerManager.cs" "src\\LauncherForm.cs"
+MSYS2_ARG_CONV_EXCL="*" /c/Windows/Microsoft.NET/Framework64/v4.0.30319/csc.exe /target:winexe /optimize+ /platform:x64 /win32icon:assets\\omniroute.ico /resource:bin\\OmniRouteConsole.exe,OmniRouteConsole.exe /resource:assets\\omniroute.ico,omniroute.ico /out:bin\\OmniRouteConsole-Setup.exe "installer\\Program.cs" "installer\\SetupForm.cs"
+```
+
 Binary outputs:
 - `bin/OmniRouteConsole.exe`
 - `bin/OmniRouteConsole-Setup.exe`
@@ -44,6 +50,10 @@ Copy-Item 'bin\OmniRouteConsole-Setup.exe' 'dist\OmniRouteConsole-Setup.exe' -Fo
 - **Compiler Version:** Compiles via `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe` (C# 5 syntax; avoid C# 6+ features like expression-bodied members or string interpolation `$"..."`).
 - **Icon Embedding:** Always pass `/win32icon:assets\omniroute.ico` during compilation so Explorer displays the icon without external shortcuts.
 - **Embedded Resources in Setup:** `OmniRouteConsole-Setup.exe` embeds `OmniRouteConsole.exe` and `omniroute.ico` via `/resource:bin\OmniRouteConsole.exe,OmniRouteConsole.exe`.
+- **Single-Instance Mutex:** Second instance launch detects existing mutex, posts registered window message `WM_SHOW_OMNIROUTE_CONSOLE` to bring the active window to foreground, and terminates immediately.
+- **Silent Startup (`--minimized`):** When launched with `--minimized` or `--silent` (e.g. via Windows Run registry), `SetVisibleCore(false)` ensures the app starts directly into the system tray without a visual form flicker.
+- **Data Directory Priority:** Resolution order: 1) `HKCU\Software\OmniRouteConsole\DataDir`, 2) `OMNIROUTE_HOME` / `OMNIROUTE_DIR`, 3) `%USERPROFILE%\.omniroute`, 4) `%APPDATA%\.omniroute`, 5) `%LOCALAPPDATA%\.omniroute`.
+- **Dynamic Port:** Server port defaults to `20128` but is auto-detected from `.env` in the active data directory (`PORT=` or `OMNIROUTE_PORT=`) or overridden via CLI `--port <n>`.
 - **System Tray Form Closing:** User closing the form via `X` or `Esc` cancels termination (`e.Cancel = true`) and hides the window to tray. Real exit requires `ExitApplication()` via the context menu.
 - **Auto-Update Mechanism:** `ServerManager.CheckUpdateAsync()` fetches `version.txt` from GitHub raw with a 3-second timeout. When bumping versions, update both `LauncherForm.cs` current version string and `version.txt`.
 - **Git Bash / MSYS2 Argument Escaping:** Git Bash automatically converts forward-slash switches (`/optimize+`) into Windows file paths (`C:/Program Files/Git/optimize+`). Set `MSYS2_ARG_CONV_EXCL="*"` or execute via `powershell -Command` or `cmd.exe /c`.
