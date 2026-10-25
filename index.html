@@ -481,29 +481,13 @@
     <!-- Installer Card with Tabs -->
     <div class="install-card">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('powershell', this)">⚡ PowerShell 1-Liner</button>
-        <button class="tab-btn" onclick="switchTab('cmd', this)">💻 CMD 1-Liner</button>
-        <button class="tab-btn" onclick="switchTab('setup', this)">📦 Setup Wizard (.exe)</button>
+        <button class="tab-btn active" onclick="switchTab('setup', this)">📦 Setup Wizard (.exe)</button>
+        <button class="tab-btn" onclick="switchTab('powershell', this)">⚡ PowerShell</button>
+        <button class="tab-btn" onclick="switchTab('cmd', this)">💻 Command Prompt (CMD)</button>
         <button class="tab-btn" onclick="switchTab('uninstall', this)">🗑️ Uninstaller</button>
       </div>
 
-      <div id="tab-powershell" class="tab-content active">
-        <div class="terminal-box">
-          <div class="terminal-code" id="cmd-ps">irm https://is.gd/omni_console | iex</div>
-          <button class="copy-btn" onclick="copyCode('cmd-ps', this)">Copy Command</button>
-        </div>
-        <div class="terminal-hint">Runs in Windows PowerShell. Installs to <code>%LOCALAPPDATA%\OmniRouteConsole</code>, creates Desktop & Start Menu shortcuts with crisp multi-res icons, and refreshes Explorer icon cache.</div>
-      </div>
-
-      <div id="tab-cmd" class="tab-content">
-        <div class="terminal-box">
-          <div class="terminal-code" id="cmd-cmd">curl -sL https://is.gd/omni_console_cmd -o i.cmd &amp;&amp; i.cmd &amp;&amp; del i.cmd</div>
-          <button class="copy-btn" onclick="copyCode('cmd-cmd', this)">Copy Command</button>
-        </div>
-        <div class="terminal-hint">For standard Command Prompt (cmd.exe). Automatically fetches installer, executes silently, and cleans up the temporary batch wrapper.</div>
-      </div>
-
-      <div id="tab-setup" class="tab-content">
+      <div id="tab-setup" class="tab-content active">
         <div class="download-box">
           <div class="download-info">
             <h3>OmniRouteConsole-Setup.exe</h3>
@@ -511,7 +495,23 @@
           </div>
           <a href="https://github.com/krishna-techhub/OmniRoute-Console/releases/latest/download/OmniRouteConsole-Setup.exe" class="download-btn">⬇️ Download Installer</a>
         </div>
-        <div class="terminal-hint">Download and double-click to install. Perfect for users who prefer standard Windows setup wizards over CLI commands.</div>
+        <div class="terminal-hint">Download and double-click to install. Standard graphical wizard with Desktop &amp; Start Menu shortcut options.</div>
+      </div>
+
+      <div id="tab-powershell" class="tab-content">
+        <div class="terminal-box">
+          <div class="terminal-code" id="cmd-ps">irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.ps1 | iex</div>
+          <button class="copy-btn" onclick="copyCode('cmd-ps', this)">Copy Command</button>
+        </div>
+        <div class="terminal-hint">Runs in Windows PowerShell. Installs to <code>%LOCALAPPDATA%\OmniRouteConsole</code>, creates Desktop &amp; Start Menu shortcuts with crisp multi-res icons, and refreshes Explorer icon cache.</div>
+      </div>
+
+      <div id="tab-cmd" class="tab-content">
+        <div class="terminal-box">
+          <div class="terminal-code" id="cmd-cmd">curl -fsSL https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</div>
+          <button class="copy-btn" onclick="copyCode('cmd-cmd', this)">Copy Command</button>
+        </div>
+        <div class="terminal-hint">For standard Command Prompt (cmd.exe). Automatically fetches installer from GitHub raw, executes silently, and cleans up the temporary batch wrapper.</div>
       </div>
 
       <div id="tab-uninstall" class="tab-content">

@@ -21,36 +21,21 @@
 
 Choose your preferred installation method:
 
-### 📦 Standalone Setup Wizard (.exe) *(No Terminal Needed)*
+### 📦 Standalone Setup Wizard (.exe) *(Recommended)*
 Download and run the standalone Windows GUI setup wizard:
 👉 **[Download OmniRouteConsole-Setup.exe](https://github.com/krishna-techhub/OmniRoute-Console/releases/latest/download/OmniRouteConsole-Setup.exe)** *(~150 KB, Zero Dependencies, Offline Installer)*
 
 ---
 
-### ⚡ Windows PowerShell 1-Liner
+### ⚡ Windows PowerShell
 ```powershell
-irm https://is.gd/omni_console | iex
-```
-
-### 💻 Command Prompt (CMD) 1-Liner
-```cmd
-curl -sL https://is.gd/omni_console_cmd -o i.cmd && i.cmd && del i.cmd
-```
-
-<details>
-<summary><b>Direct GitHub Raw Links (Fallback)</b></summary>
-
-```powershell
-# PowerShell direct raw link
 irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.ps1 | iex
 ```
 
+### 💻 Command Prompt (CMD)
 ```cmd
-:: CMD direct raw link
 curl -fsSL https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.cmd -o install.cmd && install.cmd && del install.cmd
 ```
-
-</details>
 
 ---
 

@@ -44,4 +44,4 @@ Binary outputs:
 
 - Release workflow is defined in `workflows/release.yml`.
 - Pushing a version tag (e.g. `v1.0.0`) triggers GitHub Actions to build `OmniRouteConsole.exe`, `OmniRouteConsole-Setup.exe`, create distribution ZIP `OmniRouteConsole-Windows-x64.zip`, and publish a GitHub Release with assets attached.
-- Public 1-line installation scripts (`install.ps1`, `install.cmd`, `uninstall.ps1`) are served via `raw.githubusercontent.com` and shortened via `is.gd/omni_console` and `is.gd/omni_console_cmd`.
+- Public 1-line installation scripts (`install.ps1`, `install.cmd`, `uninstall.ps1`) are served via `raw.githubusercontent.com`.
