@@ -105,9 +105,13 @@ OmniRoute Console runs as a native Win32 GUI companion that decouples server man
 ## 🚀 Key Features
 
 * **Sub-70KB Footprint**: Pure native WinForms / C# binary compiled via Windows native `csc.exe`. Zero Electron, zero WebView2, zero Node.js runtime required to operate the launcher.
-* **Persistent System Tray Controller**: Minimizes cleanly to the Windows notification tray. Right-click context menu provides instant access to **Open Dashboard**, **Restart Server**, **Stop / Start**, and **Exit**.
+* **Persistent System Tray Controller**: Minimizes cleanly to the Windows notification tray. Right-click context menu provides instant access to **Open Dashboard**, **Restart Server**, **Stop / Start**, **View Logs**, **Open Data Directory**, and **Exit**.
+* **Single-Instance Mutex & IPC Activation**: Named Win32 Mutex prevents redundant instances and brings the active window to the front via `RegisterWindowMessage` when launched again.
+* **Dynamic Custom Data & Port Resolution**: Automatically detects OmniRoute installations across custom paths, environment variables (`OMNIROUTE_HOME`, `OMNIROUTE_DIR`, `OMNIROUTE_DATA`, `OMNIROUTE_PATH`), `.env` port configurations, or custom directory selection.
+* **Crash Guardian Watchdog**: Proactively monitors server heartbeat and alerts you via Windows Balloon Notifications if the server stops unexpectedly.
+* **Windows Auto-Start (`--minimized`)**: Optional one-click auto-start via Windows Registry (`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`) launching silently into the system tray.
 * **Live Latency & Health Probing**: Asynchronous non-blocking loopback TCP socket polling measures round-trip response time in milliseconds without UI freezes.
-* **Background Process Decoupling**: Launches the Node CLI silently (`cmd.exe /c omniroute serve --tray`) with `%APPDATA%\npm` and Node.js environment paths automatically resolved.
+* **Multi-Runtime PATH Enrichment**: Automatically detects and enriches execution paths for Node.js, standard npm, pnpm, Yarn, NVM for Windows, FNM, and Volta.
 * **Smart Auto-Close & Hover Cancellation**: Auto-dismisses after 5 seconds if the server is healthy. Any mouse hover or cursor movement over the window instantly cancels the countdown.
 * **Background Auto-Update Detection**: Silently checks for newer releases and surfaces a non-intrusive update indicator.
 * **Explorer Icon Cache Synchronization**: Uses Windows Shell P/Invoke (`SHChangeNotify`) to ensure newly created shortcuts render high-resolution icons immediately without a system reboot.
