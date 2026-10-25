@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -20,13 +21,25 @@ namespace OmniRouteLauncher
         public Button btnToggle;
         public Button btnClose;
 
+        // System Tray & Context Menu
+        private NotifyIcon _trayIcon;
+        private ContextMenuStrip _trayMenu;
+        private ToolStripMenuItem _trayMenuDashboard;
+        private ToolStripMenuItem _trayMenuRestart;
+        private ToolStripMenuItem _trayMenuToggle;
+        private ToolStripMenuItem _trayMenuShowWindow;
+        private ToolStripMenuItem _trayMenuExit;
+
         // State & Timers
         private System.Windows.Forms.Timer _autoCloseTimer;
         private System.Windows.Forms.Timer _animTimer;
+        private System.Windows.Forms.Timer _monitorTimer;
         private int _countdownSeconds = 5;
         private Point _initialMousePos = Point.Empty;
         private bool _isServerRunning = false;
         private bool _isBusy = false;
+        private bool _allowRealExit = false;
+        private long _currentLatencyMs = -1;
         private Color _statusBorderColor = UITheme.Border;
         private string _animBaseText = "";
         private int _animFrame = 0;
@@ -34,8 +47,11 @@ namespace OmniRouteLauncher
         public LauncherForm()
         {
             InitializeComponent();
+            InitializeTrayIcon();
             LoadApplicationIcon();
             AttachMouseCancellation(this);
+            this.KeyPreview = true;
+            this.KeyDown += LauncherForm_KeyDown;
         }
 
         private void InitializeComponent()
@@ -133,6 +149,35 @@ namespace OmniRouteLauncher
             this.PerformLayout();
         }
 
+        private void InitializeTrayIcon()
+        {
+            _trayMenu = new ContextMenuStrip();
+            _trayMenu.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+
+            _trayMenuDashboard = new ToolStripMenuItem("Open Dashboard", null, delegate { ServerManager.OpenDashboard(); });
+            _trayMenuDashboard.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+
+            _trayMenuRestart = new ToolStripMenuItem("Restart Server", null, delegate { btnRestart_Click(this, EventArgs.Empty); });
+            _trayMenuToggle = new ToolStripMenuItem("Stop Server", null, delegate { btnToggle_Click(this, EventArgs.Empty); });
+
+            _trayMenuShowWindow = new ToolStripMenuItem("Show Console", null, delegate { ShowFormFromTray(); });
+            _trayMenuExit = new ToolStripMenuItem("Exit OmniRoute Console", null, delegate { ExitApplication(); });
+
+            _trayMenu.Items.Add(_trayMenuDashboard);
+            _trayMenu.Items.Add(new ToolStripSeparator());
+            _trayMenu.Items.Add(_trayMenuRestart);
+            _trayMenu.Items.Add(_trayMenuToggle);
+            _trayMenu.Items.Add(new ToolStripSeparator());
+            _trayMenu.Items.Add(_trayMenuShowWindow);
+            _trayMenu.Items.Add(_trayMenuExit);
+
+            _trayIcon = new NotifyIcon();
+            _trayIcon.Text = "OmniRoute Console (Checking...)";
+            _trayIcon.ContextMenuStrip = _trayMenu;
+            _trayIcon.Visible = true;
+            _trayIcon.DoubleClick += delegate { ShowFormFromTray(); };
+        }
+
         private void LoadApplicationIcon()
         {
             try
@@ -142,6 +187,7 @@ namespace OmniRouteLauncher
                 {
                     this.Icon = appIcon;
                     picIcon.Image = appIcon.ToBitmap();
+                    if (_trayIcon != null) _trayIcon.Icon = appIcon;
                     return;
                 }
             }
@@ -167,6 +213,7 @@ namespace OmniRouteLauncher
                         {
                             this.Icon = (Icon)ico.Clone();
                             picIcon.Image = ico.ToBitmap();
+                            if (_trayIcon != null) _trayIcon.Icon = (Icon)ico.Clone();
                             return;
                         }
                     }
@@ -182,13 +229,72 @@ namespace OmniRouteLauncher
         {
             base.OnShown(e);
 
-            // Initial non-blocking health check
+            // Initial non-blocking health check with latency measurement
             ThreadPool.QueueUserWorkItem(delegate
             {
-                bool healthy = ServerManager.CheckServerHealthy(ServerManager.DefaultPort);
+                long latency;
+                bool healthy = ServerManager.MeasurePingLatency(ServerManager.DefaultPort, out latency);
                 SafeInvoke(delegate
                 {
-                    ApplyServerStatus(healthy, true);
+                    _currentLatencyMs = latency;
+                    ApplyServerStatus(healthy, true, latency);
+                });
+            });
+
+            // Start periodic latency and health polling timer (every 4s)
+            StartMonitorTimer();
+
+            // Check for background auto-updates
+            CheckForUpdates();
+        }
+
+        private void StartMonitorTimer()
+        {
+            if (_monitorTimer == null)
+            {
+                _monitorTimer = new System.Windows.Forms.Timer();
+                _monitorTimer.Interval = 4000;
+                _monitorTimer.Tick += delegate
+                {
+                    if (_isBusy) return;
+
+                    ThreadPool.QueueUserWorkItem(delegate
+                    {
+                        long latency;
+                        bool healthy = ServerManager.MeasurePingLatency(ServerManager.DefaultPort, out latency);
+                        SafeInvoke(delegate
+                        {
+                            if (!_isBusy)
+                            {
+                                _currentLatencyMs = latency;
+                                ApplyServerStatus(healthy, false, latency);
+                            }
+                        });
+                    });
+                };
+            }
+            _monitorTimer.Start();
+        }
+
+        private void CheckForUpdates()
+        {
+            ServerManager.CheckUpdateAsync("1.0.0", delegate(string newVersion)
+            {
+                SafeInvoke(delegate
+                {
+                    lblSubtitle.Text = string.Format("Update v{0} available • Click to view", newVersion);
+                    lblSubtitle.ForeColor = UITheme.Brand;
+                    lblSubtitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                    lblSubtitle.Cursor = Cursors.Hand;
+                    lblSubtitle.Click += delegate
+                    {
+                        try { Process.Start(ServerManager.ReleasesUrl); } catch { }
+                    };
+
+                    if (_trayIcon != null)
+                    {
+                        _trayIcon.ShowBalloonTip(3000, "OmniRoute Console Update", string.Format("Version v{0} is available for download.", newVersion), ToolTipIcon.Info);
+                    }
                 });
             });
         }
@@ -204,7 +310,7 @@ namespace OmniRouteLauncher
             }
         }
 
-        private void ApplyServerStatus(bool isRunning, bool isInitial)
+        private void ApplyServerStatus(bool isRunning, bool isInitial, long latency)
         {
             _isServerRunning = isRunning;
             btnDashboard.Enabled = true;
@@ -218,6 +324,15 @@ namespace OmniRouteLauncher
                 _statusBorderColor = UITheme.GreenBorder;
                 lblStatus.Invalidate();
 
+                if (latency >= 0)
+                {
+                    lblEndpoint.Text = string.Format("127.0.0.1 : 20128  •  {0}ms latency", latency);
+                }
+                else
+                {
+                    lblEndpoint.Text = "127.0.0.1 : 20128  •  Active";
+                }
+
                 btnToggle.Text = "Stop";
                 btnToggle.BackColor = UITheme.RedBg;
                 btnToggle.ForeColor = UITheme.RedText;
@@ -226,6 +341,18 @@ namespace OmniRouteLauncher
                 btnToggle.FlatAppearance.MouseDownBackColor = UITheme.RedBg;
 
                 btnRestart.Enabled = true;
+
+                if (_trayIcon != null)
+                {
+                    string trayText = latency >= 0
+                        ? string.Format("OmniRoute: Online ({0}ms)", latency)
+                        : "OmniRoute: Online (20128)";
+                    if (trayText.Length > 63) trayText = trayText.Substring(0, 63);
+                    _trayIcon.Text = trayText;
+                }
+
+                if (_trayMenuToggle != null) _trayMenuToggle.Text = "Stop Server";
+                if (_trayMenuRestart != null) _trayMenuRestart.Enabled = true;
 
                 if (isInitial)
                 {
@@ -240,6 +367,8 @@ namespace OmniRouteLauncher
                 _statusBorderColor = UITheme.RedBorder;
                 lblStatus.Invalidate();
 
+                lblEndpoint.Text = "127.0.0.1 : 20128  •  Offline";
+
                 btnToggle.Text = "Start";
                 btnToggle.BackColor = UITheme.GreenBg;
                 btnToggle.ForeColor = UITheme.GreenText;
@@ -248,6 +377,15 @@ namespace OmniRouteLauncher
                 btnToggle.FlatAppearance.MouseDownBackColor = UITheme.GreenBg;
 
                 btnRestart.Enabled = false;
+
+                if (_trayIcon != null)
+                {
+                    _trayIcon.Text = "OmniRoute: Offline";
+                }
+
+                if (_trayMenuToggle != null) _trayMenuToggle.Text = "Start Server";
+                if (_trayMenuRestart != null) _trayMenuRestart.Enabled = false;
+
                 CancelAutoClose();
             }
         }
@@ -301,7 +439,7 @@ namespace OmniRouteLauncher
                     if (_countdownSeconds <= 0)
                     {
                         _autoCloseTimer.Stop();
-                        this.Close();
+                        this.Hide(); // Hide to tray rather than killing
                     }
                     else
                     {
@@ -361,6 +499,58 @@ namespace OmniRouteLauncher
             }
         }
 
+        private void LauncherForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                CancelAutoClose();
+                this.Hide();
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Space && btnToggle.Enabled)
+            {
+                btnToggle_Click(this, EventArgs.Empty);
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Enter && btnDashboard.Enabled)
+            {
+                btnDashboard_Click(this, EventArgs.Empty);
+                e.Handled = true;
+            }
+        }
+
+        public void ShowFormFromTray()
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+            this.BringToFront();
+            this.Activate();
+            CancelAutoClose();
+        }
+
+        public void ExitApplication()
+        {
+            _allowRealExit = true;
+            if (_trayIcon != null)
+            {
+                _trayIcon.Visible = false;
+                _trayIcon.Dispose();
+                _trayIcon = null;
+            }
+            Application.Exit();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (!_allowRealExit && e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.Hide();
+                return;
+            }
+            base.OnFormClosing(e);
+        }
+
         private void btnDashboard_Click(object sender, EventArgs e)
         {
             CancelAutoClose();
@@ -386,10 +576,11 @@ namespace OmniRouteLauncher
                 ServerManager.StartServerProcess();
 
                 bool healthy = false;
-                for (int i = 0; i < 12; i++)
+                long latency = -1;
+                for (int i = 0; i < 14; i++)
                 {
                     Thread.Sleep(500);
-                    if (ServerManager.CheckServerHealthy(ServerManager.DefaultPort))
+                    if (ServerManager.MeasurePingLatency(ServerManager.DefaultPort, out latency))
                     {
                         healthy = true;
                         break;
@@ -400,7 +591,8 @@ namespace OmniRouteLauncher
                 {
                     StopStatusAnimation();
                     _isBusy = false;
-                    ApplyServerStatus(healthy, false);
+                    _currentLatencyMs = latency;
+                    ApplyServerStatus(healthy, false, latency);
                 });
             });
         }
@@ -423,13 +615,15 @@ namespace OmniRouteLauncher
                 {
                     ServerManager.StopServerProcess();
                     Thread.Sleep(1000);
-                    bool healthy = ServerManager.CheckServerHealthy(ServerManager.DefaultPort);
+                    long latency;
+                    bool healthy = ServerManager.MeasurePingLatency(ServerManager.DefaultPort, out latency);
 
                     SafeInvoke(delegate
                     {
                         StopStatusAnimation();
                         _isBusy = false;
-                        ApplyServerStatus(healthy, false);
+                        _currentLatencyMs = latency;
+                        ApplyServerStatus(healthy, false, latency);
                     });
                 });
             }
@@ -442,10 +636,11 @@ namespace OmniRouteLauncher
                     ServerManager.StartServerProcess();
 
                     bool healthy = false;
-                    for (int i = 0; i < 10; i++)
+                    long latency = -1;
+                    for (int i = 0; i < 12; i++)
                     {
                         Thread.Sleep(500);
-                        if (ServerManager.CheckServerHealthy(ServerManager.DefaultPort))
+                        if (ServerManager.MeasurePingLatency(ServerManager.DefaultPort, out latency))
                         {
                             healthy = true;
                             break;
@@ -456,7 +651,8 @@ namespace OmniRouteLauncher
                     {
                         StopStatusAnimation();
                         _isBusy = false;
-                        ApplyServerStatus(healthy, false);
+                        _currentLatencyMs = latency;
+                        ApplyServerStatus(healthy, false, latency);
                     });
                 });
             }
@@ -465,7 +661,7 @@ namespace OmniRouteLauncher
         private void btnClose_Click(object sender, EventArgs e)
         {
             CancelAutoClose();
-            this.Close();
+            this.Hide(); // Minimize to system tray
         }
 
         private void SafeInvoke(Action action)
@@ -496,6 +692,22 @@ namespace OmniRouteLauncher
                 {
                     _animTimer.Dispose();
                     _animTimer = null;
+                }
+                if (_monitorTimer != null)
+                {
+                    _monitorTimer.Dispose();
+                    _monitorTimer = null;
+                }
+                if (_trayIcon != null)
+                {
+                    _trayIcon.Visible = false;
+                    _trayIcon.Dispose();
+                    _trayIcon = null;
+                }
+                if (_trayMenu != null)
+                {
+                    _trayMenu.Dispose();
+                    _trayMenu = null;
                 }
             }
             base.Dispose(disposing);

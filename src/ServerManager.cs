@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace OmniRouteLauncher
 {
@@ -9,6 +11,8 @@ namespace OmniRouteLauncher
     {
         public const int DefaultPort = 20128;
         public const string DefaultDashboardUrl = "http://localhost:20128/home";
+        public const string VersionCheckUrl = "https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/version.txt";
+        public const string ReleasesUrl = "https://github.com/krishna-techhub/OmniRoute-Console/releases";
 
         public static bool CheckServerHealthy()
         {
@@ -17,6 +21,14 @@ namespace OmniRouteLauncher
 
         public static bool CheckServerHealthy(int port)
         {
+            long latency;
+            return MeasurePingLatency(port, out latency);
+        }
+
+        public static bool MeasurePingLatency(int port, out long latencyMs)
+        {
+            latencyMs = -1;
+            Stopwatch sw = Stopwatch.StartNew();
             try
             {
                 using (TcpClient client = new TcpClient())
@@ -30,13 +42,55 @@ namespace OmniRouteLauncher
                     }
 
                     client.EndConnect(result);
-                    return client.Connected;
+                    sw.Stop();
+                    if (client.Connected)
+                    {
+                        latencyMs = sw.ElapsedMilliseconds;
+                        return true;
+                    }
+                    return false;
                 }
             }
             catch
             {
                 return false;
             }
+        }
+
+        public static void CheckUpdateAsync(string currentVersion, Action<string> onUpdateFound)
+        {
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(VersionCheckUrl);
+                    request.Timeout = 3000;
+                    request.ReadWriteTimeout = 3000;
+                    request.UserAgent = "OmniRouteConsole/" + currentVersion;
+
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    {
+                        if (response.StatusCode == HttpStatusCode.OK)
+                        {
+                            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                            {
+                                string remoteVer = reader.ReadToEnd().Trim();
+                                if (!string.IsNullOrEmpty(remoteVer) && !string.Equals(remoteVer, currentVersion, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    if (onUpdateFound != null)
+                                    {
+                                        onUpdateFound(remoteVer);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Fail silently on network errors
+                }
+            });
         }
 
         public static void StartServerProcess()

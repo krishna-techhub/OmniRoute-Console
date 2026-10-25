@@ -3,29 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmniRoute Console — Native Windows Manager & Tray Controller</title>
-  <meta name="description" content="Lightweight, native Windows companion launcher & system tray controller for the OmniRoute local AI router server.">
+  <title>OmniRoute Console — Native Windows System Tray Companion</title>
+  <meta name="description" content="Ultra-lightweight 64KB native Windows companion and system tray controller for the OmniRoute local AI router (127.0.0.1:20128).">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
     :root {
-      --bg: #090a10;
-      --surface: #10131d;
-      --surface-elevated: #161a29;
-      --border: #222739;
-      --border-focus: #4338ca;
+      --bg: #090a0f;
+      --surface-1: #11131c;
+      --surface-2: #161925;
+      --surface-3: #1c2132;
+      --surface-input: #0b0d14;
+      --border-subtle: #1f2538;
+      --border-strong: #2e3752;
       --brand: #6366f1;
-      --brand-glow: rgba(99, 102, 241, 0.25);
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-subtle: #64748b;
-      --green: #10b981;
-      --green-glow: rgba(16, 185, 129, 0.2);
-      --yellow: #f59e0b;
-      --red: #ef4444;
-      --radius: 14px;
+      --brand-hover: #4f46e5;
+      --brand-light: #818cf8;
+      --brand-glow: rgba(99, 102, 241, 0.16);
+      --text-1: #f8fafc;
+      --text-2: #cbd5e1;
+      --text-3: #94a3b8;
+      --text-4: #64748b;
+      --green-bg: rgba(16, 185, 129, 0.12);
+      --green-text: #34d399;
+      --green-border: rgba(16, 185, 129, 0.28);
+      --red-bg: rgba(239, 68, 68, 0.12);
+      --red-text: #f87171;
+      --red-border: rgba(239, 68, 68, 0.28);
+      --amber-bg: rgba(245, 158, 11, 0.12);
+      --amber-text: #fbbf24;
+      --amber-border: rgba(245, 158, 11, 0.28);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     }
 
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -34,599 +45,1057 @@
     body {
       background-color: var(--bg);
       background-image:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.18), transparent),
-        radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.08), transparent);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        radial-gradient(ellipse 70% 380px at 50% 0%, rgba(99, 102, 241, 0.14), transparent),
+        linear-gradient(180deg, #090a0f 0%, #0d0f18 100%);
+      color: var(--text-2);
+      font-family: var(--font-sans);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      padding: 0 20px;
+      padding: 0 24px;
     }
 
-    .container {
-      max-width: 960px;
+    .wrap {
+      max-width: 920px;
       margin: 0 auto;
-      padding: 60px 0 80px;
+      padding: 56px 0 88px;
     }
 
-    /* Hero Section */
+    /* Header & Branding */
     .hero {
       text-align: center;
-      margin-bottom: 50px;
+      margin-bottom: 44px;
     }
 
-    .logo-wrapper {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 24px;
+    .app-icon-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 76px;
+      height: 76px;
+      border-radius: 18px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 24px var(--brand-glow);
+      margin-bottom: 22px;
     }
 
-    .logo-wrapper::after {
-      content: '';
-      position: absolute;
-      inset: -12px;
-      background: var(--brand);
-      filter: blur(28px);
-      opacity: 0.45;
-      z-index: 0;
-      border-radius: 50%;
-    }
-
-    .logo-img {
-      position: relative;
-      width: 92px;
-      height: 92px;
-      border-radius: 22px;
-      z-index: 1;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    .app-icon-badge img {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
     }
 
     h1 {
-      font-size: 3rem;
-      font-weight: 800;
+      font-size: 2.5rem;
+      font-weight: 700;
       letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 16px;
-      background: linear-gradient(180deg, #ffffff 30%, #a5b4fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text-1);
+      margin-bottom: 12px;
     }
 
-    .subtitle {
-      font-size: 1.25rem;
-      color: var(--text-muted);
-      max-width: 640px;
-      margin: 0 auto 28px;
-      font-weight: 400;
+    .lead {
+      font-size: 1.15rem;
+      color: var(--text-3);
+      max-width: 620px;
+      margin: 0 auto 24px;
+      line-height: 1.55;
     }
 
-    .badges {
+    .pill-row {
       display: flex;
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
+      margin-bottom: 8px;
     }
 
-    .badge {
+    .pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: var(--surface-elevated);
-      border: 1px solid var(--border);
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      color: #cbd5e1;
-      text-decoration: none;
+      font-size: 0.8rem;
       font-weight: 500;
-      transition: all 0.2s ease;
+      padding: 5px 12px;
+      border-radius: 6px;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-3);
+      text-decoration: none;
     }
 
-    .badge:hover {
+    .pill strong {
+      color: var(--text-1);
+    }
+
+    a.pill:hover {
       border-color: var(--brand);
-      color: #ffffff;
-      transform: translateY(-1px);
+      color: var(--text-1);
     }
 
-    /* Installer Card */
-    .install-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      margin-bottom: 60px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      position: relative;
+    /* Primary Quick Deploy Card */
+    .deploy-panel {
+      background: var(--surface-1);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      margin-bottom: 56px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
     }
 
-    .tabs {
+    .deploy-tabs {
       display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--surface-2);
+      overflow-x: auto;
     }
 
-    .tab-btn {
+    .tab-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background: transparent;
       border: none;
-      color: var(--text-subtle);
-      font-size: 0.95rem;
+      border-bottom: 2px solid transparent;
+      color: var(--text-3);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
       font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 8px;
+      padding: 14px 20px;
       cursor: pointer;
-      transition: all 0.2s;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
     }
 
-    .tab-btn.active {
-      background: var(--surface-elevated);
-      color: #ffffff;
+    .tab-trigger:hover {
+      color: var(--text-1);
     }
 
-    .tab-content {
+    .tab-trigger.active {
+      color: var(--text-1);
+      background: var(--surface-1);
+      border-bottom-color: var(--brand);
+    }
+
+    .tab-pane {
       display: none;
+      padding: 24px;
     }
 
-    .tab-content.active {
+    .tab-pane.active {
       display: block;
     }
 
-    .terminal-box {
-      background: #040508;
-      border: 1px solid #1a1e2d;
-      border-radius: 10px;
-      padding: 16px 20px;
+    .setup-wizard-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      position: relative;
+      gap: 24px;
+      flex-wrap: wrap;
     }
 
-    .terminal-code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 1rem;
+    .setup-desc h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 6px;
+    }
+
+    .setup-desc p {
+      font-size: 0.88rem;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    .btn-download-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--brand);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px var(--brand-glow);
+      transition: background 0.15s, transform 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-download-primary:hover {
+      background: var(--brand-hover);
+      transform: translateY(-1px);
+    }
+
+    .code-row {
+      background: var(--surface-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .code-line {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
       color: #38bdf8;
       overflow-x: auto;
       white-space: nowrap;
       user-select: all;
     }
 
-    .terminal-hint {
+    .btn-copy {
+      background: var(--surface-3);
+      border: 1px solid var(--border-strong);
+      color: var(--text-2);
+      font-family: var(--font-sans);
       font-size: 0.82rem;
-      color: var(--text-subtle);
-      margin-top: 10px;
-    }
-
-    .copy-btn {
-      background: var(--brand);
-      color: #ffffff;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 8px;
-      font-size: 0.85rem;
       font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.2s;
-      flex-shrink: 0;
+      white-space: nowrap;
+      transition: all 0.15s;
     }
 
-    .copy-btn:hover {
-      background: #4f46e5;
-      box-shadow: 0 4px 14px var(--brand-glow);
+    .btn-copy:hover {
+      color: var(--text-1);
+      border-color: var(--brand);
+      background: var(--surface-2);
     }
 
-    .copy-btn.copied {
-      background: var(--green);
+    .btn-copy.copied {
+      background: var(--green-bg);
+      border-color: var(--green-border);
+      color: var(--green-text);
     }
 
-    /* Download Box for Standalone Setup */
-    .download-box {
-      background: #040508;
-      border: 1px solid #1a1e2d;
-      border-radius: 10px;
-      padding: 22px 24px;
+    .meta-note {
+      margin-top: 14px;
+      font-size: 0.82rem;
+      color: var(--text-4);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-note code {
+      font-family: var(--font-mono);
+      color: var(--text-3);
+      background: var(--surface-2);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Live Interactive Tray & Latency Simulator */
+    .interactive-section {
+      background: var(--surface-1);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 56px;
+    }
+
+    .section-eyebrow {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-light);
+      margin-bottom: 6px;
+    }
+
+    .section-heading {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      font-size: 0.92rem;
+      color: var(--text-3);
+      margin-bottom: 22px;
+      max-width: 680px;
+    }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Realistic Win32 Window Preview Frame */
+    .win-frame {
+      background: #0d0f18;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .win-titlebar {
+      height: 32px;
+      background: #141724;
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
+      padding: 0 10px;
     }
 
-    .download-info h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 4px;
-    }
-
-    .download-info p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin: 0;
-    }
-
-    .download-btn {
-      display: inline-flex;
+    .win-title {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      font-weight: 500;
+      display: flex;
       align-items: center;
       gap: 8px;
-      background: var(--brand);
-      color: #ffffff;
-      text-decoration: none;
-      padding: 10px 22px;
-      border-radius: 8px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      transition: all 0.2s;
-      flex-shrink: 0;
     }
 
-    .download-btn:hover {
-      background: #4f46e5;
-      box-shadow: 0 4px 16px var(--brand-glow);
-      transform: translateY(-1px);
+    .win-title-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .win-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .win-btn {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--surface-3);
+      display: inline-block;
+    }
+
+    .win-btn.close {
+      background: #ef4444;
+    }
+
+    .win-content {
+      padding: 20px;
+      background: #090b12;
+    }
+
+    .win-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .win-app-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .win-app-sub {
+      font-size: 0.78rem;
+      color: var(--text-4);
+      margin-top: 2px;
+    }
+
+    .win-status-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--green-border);
+      background: var(--green-bg);
+      color: var(--green-text);
+      letter-spacing: 0.04em;
+    }
+
+    .win-status-badge.stopped {
+      border-color: var(--red-border);
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    .win-endpoint {
+      font-size: 0.8rem;
+      color: var(--text-3);
+      font-family: var(--font-mono);
+      margin-bottom: 16px;
+    }
+
+    .win-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .win-btn-action {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 5px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .win-btn-primary {
+      background: var(--brand);
+      color: #ffffff;
+      border-color: var(--brand);
+    }
+
+    .win-btn-neutral {
+      background: var(--surface-2);
+      color: var(--text-2);
+      border-color: var(--border-strong);
+    }
+
+    .win-btn-danger {
+      background: var(--red-bg);
+      color: var(--red-text);
+      border-color: var(--red-border);
+    }
+
+    /* Tray Menu Simulator Box */
+    .sim-tray-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .sim-tray-header {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-3);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tray-menu-mockup {
+      background: #12141f;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      padding: 6px 0;
+      font-size: 0.82rem;
+      margin-bottom: 14px;
+    }
+
+    .tray-item {
+      padding: 7px 14px;
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tray-item:hover {
+      background: var(--brand);
+      color: #ffffff;
+    }
+
+    .tray-item.bold {
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .tray-divider {
+      height: 1px;
+      background: var(--border-subtle);
+      margin: 4px 0;
+    }
+
+    .sim-toolbar {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sim-trigger {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-1);
+      color: var(--text-2);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-sim-trigger:hover {
+      border-color: var(--brand);
+      color: #ffffff;
     }
 
     /* Screenshots Section */
-    .preview-section {
-      margin-bottom: 65px;
+    .screenshots-panel {
+      margin-bottom: 64px;
     }
 
-    .section-title {
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      letter-spacing: -0.02em;
+    .shot-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
     }
 
-    .section-desc {
-      text-align: center;
-      color: var(--text-muted);
-      margin-bottom: 35px;
-      font-size: 1rem;
-    }
-
-    .screenshot-vertical-list {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-      max-width: 680px;
-      margin: 0 auto;
-    }
-
-    .shot-card-vert {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+    .shot-card {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
-      transition: transform 0.25s ease, border-color 0.25s ease;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
     }
 
-    .shot-card-vert:hover {
-      transform: translateY(-3px);
-      border-color: #3b4566;
-    }
-
-    .shot-card-vert .shot-header {
-      padding: 16px 22px;
+    .shot-card-header {
+      padding: 14px 20px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-elevated);
+      align-items: center;
     }
 
-    .shot-card-vert .shot-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text);
+    .shot-card-header h4 {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-1);
     }
 
-    .shot-card-vert .shot-body {
+    .shot-img-container {
       padding: 24px;
       background: #06070c;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
     }
 
-    .shot-card-vert .shot-img {
+    .shot-img-container img {
       width: 100%;
-      max-width: 630px;
+      max-width: 640px;
       height: auto;
-      border-radius: 8px;
-      display: block;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
 
-    .status-tag {
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 999px;
+    /* Features Grid */
+    .features-panel {
+      margin-bottom: 64px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .feature-item {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 22px;
+    }
+
+    .feature-icon-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .feature-icon {
+      font-size: 1.3rem;
+    }
+
+    .feature-item h3 {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    .feature-item p {
+      font-size: 0.86rem;
+      color: var(--text-3);
+      line-height: 1.55;
+    }
+
+    /* Architecture Flow (Clean ASCII / Diagrammatic) */
+    .arch-panel {
+      background: var(--surface-1);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 26px;
+      margin-bottom: 64px;
+    }
+
+    .arch-pre {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #94a3b8;
+      background: var(--surface-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* Shortcut Reference */
+    .shortcuts-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 0.86rem;
+    }
+
+    .shortcuts-table th, .shortcuts-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .shortcuts-table th {
+      color: var(--text-4);
+      font-size: 0.76rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    .status-tag.running {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .status-tag.starting {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .status-tag.stopped {
-      background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .shot-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .shot-body {
-      padding: 16px;
-      background: #080911;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-    }
-
-    .shot-img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      display: block;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-    }
-
-    /* Features Grid */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 20px;
-      margin-bottom: 60px;
-    }
-
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      transition: all 0.2s;
-    }
-
-    .feature-card:hover {
-      border-color: #384260;
-      background: var(--surface-elevated);
-    }
-
-    .feature-icon {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
-      display: inline-block;
-    }
-
-    .feature-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: #ffffff;
-    }
-
-    .feature-desc {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      line-height: 1.55;
+    .shortcuts-table kbd {
+      background: var(--surface-3);
+      border: 1px solid var(--border-strong);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-1);
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border);
-      padding-top: 35px;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 36px;
       text-align: center;
-      color: var(--text-subtle);
-      font-size: 0.9rem;
+      font-size: 0.86rem;
+      color: var(--text-4);
     }
 
     footer a {
-      color: #a5b4fc;
+      color: var(--brand-light);
       text-decoration: none;
-      font-weight: 500;
     }
 
     footer a:hover {
       text-decoration: underline;
     }
 
-    @media (max-width: 640px) {
-      h1 { font-size: 2.2rem; }
-      .container { padding: 40px 0 60px; }
-      .terminal-box { flex-direction: column; align-items: stretch; }
-      .copy-btn { text-align: center; }
+    @media (max-width: 720px) {
+      h1 { font-size: 2rem; }
+      .sim-grid { grid-template-columns: 1fr; }
+      .code-row { flex-direction: column; align-items: stretch; }
+      .btn-copy { text-align: center; }
+      .setup-wizard-row { flex-direction: column; align-items: flex-start; }
+      .btn-download-primary { width: 100%; justify-content: center; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="wrap">
 
-    <!-- Hero Header -->
+    <!-- Header -->
     <header class="hero">
-      <div class="logo-wrapper">
-        <img src="assets/icon.svg" alt="OmniRoute Console Logo" class="logo-img">
+      <div class="app-icon-badge">
+        <img src="assets/icon.svg" alt="OmniRoute Console Logo">
       </div>
       <h1>OmniRoute Console</h1>
-      <p class="subtitle">Lightweight Windows GUI Manager, System Tray Controller & One-Line Installer for OmniRoute.</p>
+      <p class="lead">
+        High-performance, ultra-lightweight Windows companion and system tray controller for the OmniRoute local AI router (<code>127.0.0.1:20128</code>).
+      </p>
 
-      <div class="badges">
-        <span class="badge">🪟 Windows 10 / 11</span>
-        <span class="badge">⚡ Zero Node.js Dependency</span>
-        <span class="badge">🔕 Detached Tray Mode</span>
-        <a href="https://github.com/krishna-techhub/OmniRoute-Console" class="badge" target="_blank">⭐ GitHub Repository</a>
+      <div class="pill-row">
+        <span class="pill"><strong>64 KB</strong> Native PE Binary</span>
+        <span class="pill"><strong>0 KB</strong> Node.js Launcher Cost</span>
+        <span class="pill"><strong>&lt; 5ms</strong> Async TCP Probe</span>
+        <span class="pill"><strong>Win 10/11</strong> x64 Native</span>
+        <a href="https://github.com/krishna-techhub/OmniRoute-Console" class="pill" target="_blank">⭐ GitHub Repository</a>
       </div>
     </header>
 
-    <!-- Installer Card with Tabs -->
-    <div class="install-card">
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('setup', this)">📦 Setup Wizard (.exe)</button>
-        <button class="tab-btn" onclick="switchTab('powershell', this)">⚡ PowerShell</button>
-        <button class="tab-btn" onclick="switchTab('cmd', this)">💻 Command Prompt (CMD)</button>
-        <button class="tab-btn" onclick="switchTab('uninstall', this)">🗑️ Uninstaller</button>
+    <!-- Installation & Deployment Matrix -->
+    <section class="deploy-panel">
+      <div class="deploy-tabs">
+        <button class="tab-trigger active" onclick="switchDeployTab('setup', this)">📦 Setup Wizard (.exe)</button>
+        <button class="tab-trigger" onclick="switchDeployTab('powershell', this)">⚡ PowerShell 1-Liner</button>
+        <button class="tab-trigger" onclick="switchDeployTab('cmd', this)">💻 Command Prompt</button>
+        <button class="tab-trigger" onclick="switchDeployTab('uninstall', this)">🗑️ Uninstaller</button>
       </div>
 
-      <div id="tab-setup" class="tab-content active">
-        <div class="download-box">
-          <div class="download-info">
+      <!-- Tab: Setup Wizard -->
+      <div id="tab-setup" class="tab-pane active">
+        <div class="setup-wizard-row">
+          <div class="setup-desc">
             <h3>OmniRouteConsole-Setup.exe</h3>
-            <p>Standalone Windows GUI Setup Wizard (~150 KB) &bull; Zero external runtimes &bull; Custom install directory &bull; Offline payload</p>
+            <p>Single standalone graphical installer with zero external runtimes (~160 KB). Extracts embedded binary, creates crisp Desktop/Start Menu shortcuts, and flushes Windows Explorer icon cache.</p>
           </div>
-          <a href="https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe" class="download-btn" download>⬇️ Download Installer</a>
+          <a href="https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe" class="btn-download-primary" download>
+            ⬇️ Download Setup Wizard
+          </a>
         </div>
-        <div class="terminal-hint">Download and double-click to install. Standard graphical wizard with Desktop &amp; Start Menu shortcut options.</div>
+        <div class="meta-note">
+          <span>💡 Direct standalone executable with embedded offline payload &bull; SHA256 verified build.</span>
+        </div>
       </div>
 
-      <div id="tab-powershell" class="tab-content">
-        <div class="terminal-box">
-          <div class="terminal-code" id="cmd-ps">irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.ps1 | iex</div>
-          <button class="copy-btn" onclick="copyCode('cmd-ps', this)">Copy Command</button>
+      <!-- Tab: PowerShell -->
+      <div id="tab-powershell" class="tab-pane">
+        <div class="code-row">
+          <div class="code-line" id="code-ps">irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.ps1 | iex</div>
+          <button class="btn-copy" onclick="copySnippet('code-ps', this)">Copy Command</button>
         </div>
-        <div class="terminal-hint">Runs in Windows PowerShell. Installs to <code>%LOCALAPPDATA%\OmniRouteConsole</code>, creates Desktop &amp; Start Menu shortcuts with crisp multi-res icons, and refreshes Explorer icon cache.</div>
+        <div class="meta-note">
+          <span>Target directory: <code>%LOCALAPPDATA%\OmniRouteConsole</code> &bull; Native compilation fallback if raw binary is blocked.</span>
+        </div>
       </div>
 
-      <div id="tab-cmd" class="tab-content">
-        <div class="terminal-box">
-          <div class="terminal-code" id="cmd-cmd">curl -fsSL https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</div>
-          <button class="copy-btn" onclick="copyCode('cmd-cmd', this)">Copy Command</button>
+      <!-- Tab: CMD -->
+      <div id="tab-cmd" class="tab-pane">
+        <div class="code-row">
+          <div class="code-line" id="code-cmd">curl -fsSL https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</div>
+          <button class="btn-copy" onclick="copySnippet('code-cmd', this)">Copy Command</button>
         </div>
-        <div class="terminal-hint">For standard Command Prompt (cmd.exe). Automatically fetches installer from GitHub raw, executes silently, and cleans up the temporary batch wrapper.</div>
+        <div class="meta-note">
+          <span>Clean <code>cmd.exe</code> one-liner with automatic cleanup of temporary execution script.</span>
+        </div>
       </div>
 
-      <div id="tab-uninstall" class="tab-content">
-        <div class="terminal-box">
-          <div class="terminal-code" id="cmd-un">irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/uninstall.ps1 | iex</div>
-          <button class="copy-btn" onclick="copyCode('cmd-un', this)">Copy Command</button>
+      <!-- Tab: Uninstall -->
+      <div id="tab-uninstall" class="tab-pane">
+        <div class="code-row">
+          <div class="code-line" id="code-un">irm https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/uninstall.ps1 | iex</div>
+          <button class="btn-copy" onclick="copySnippet('code-un', this)">Copy Command</button>
         </div>
-        <div class="terminal-hint">Safely stops any running OmniRoute Console process, deletes shortcuts, and completely cleans up the installation directory.</div>
+        <div class="meta-note">
+          <span>Stops active console instances, removes shortcuts, and cleans up directory cleanly without leftover files.</span>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- 3x Upscaled HD Preview -->
-    <section class="preview-section">
-      <h2 class="section-title">Visual Interface States</h2>
-      <p class="section-desc">Clean, native Windows dialog aesthetic with instantaneous TCP port 20128 status probing.</p>
+    <!-- Interactive Tray & Health Simulation -->
+    <section class="interactive-section">
+      <div class="section-eyebrow">Interactive Simulator</div>
+      <h2 class="section-heading">System Tray Controller &amp; Latency Probing</h2>
+      <p class="section-sub">OmniRoute Console remains in the background tray with non-blocking socket polling. Test the states interactively below:</p>
 
-      <div class="screenshot-vertical-list">
-        <div class="shot-card-vert">
-          <div class="shot-header">
-            <span class="shot-title">🟢 Server Online (Active & Tray Mode)</span>
-            <span class="status-tag running">Running</span>
+      <div class="sim-grid">
+        <!-- Mockup Window -->
+        <div class="win-frame">
+          <div class="win-titlebar">
+            <div class="win-title">
+              <img src="assets/icon.svg" class="win-title-icon" alt="icon">
+              <span>OmniRoute Server</span>
+            </div>
+            <div class="win-controls">
+              <span class="win-btn"></span>
+              <span class="win-btn"></span>
+              <span class="win-btn close" title="Minimizes to tray"></span>
+            </div>
           </div>
-          <div class="shot-body">
-            <img src="assets/screenshots/running.png" alt="Server Running Preview" class="shot-img">
+          <div class="win-content">
+            <div class="win-header-row">
+              <div>
+                <div class="win-app-name">OmniRoute Server</div>
+                <div class="win-app-sub" id="sim-subtitle">Local server control</div>
+              </div>
+              <div class="win-status-badge" id="sim-status">RUNNING</div>
+            </div>
+
+            <div class="win-endpoint" id="sim-endpoint">127.0.0.1 : 20128 &bull; 3ms latency</div>
+
+            <div class="win-actions">
+              <button class="win-btn-action win-btn-primary" onclick="alert('Navigating to http://localhost:20128/home')">Dashboard</button>
+              <button class="win-btn-action win-btn-neutral" id="sim-btn-restart" onclick="simulateRestart()">Restart</button>
+              <button class="win-btn-action win-btn-danger" id="sim-btn-toggle" onclick="toggleServer()">Stop</button>
+            </div>
           </div>
         </div>
 
-        <div class="shot-card-vert">
-          <div class="shot-header">
-            <span class="shot-title">🟡 Connecting Probe (Background Start)</span>
-            <span class="status-tag starting">Starting</span>
+        <!-- Mockup Tray Menu -->
+        <div class="sim-tray-box">
+          <div class="sim-tray-header">
+            <span>System Tray Menu (Right-Click)</span>
+            <span id="sim-tray-tooltip" style="font-size:0.75rem; color:var(--text-4)">OmniRoute: Online (3ms)</span>
           </div>
-          <div class="shot-body">
-            <img src="assets/screenshots/starting.png" alt="Starting State Preview" class="shot-img">
-          </div>
-        </div>
 
-        <div class="shot-card-vert">
-          <div class="shot-header">
-            <span class="shot-title">🔴 Offline Standby (Ready to Start)</span>
-            <span class="status-tag stopped">Stopped</span>
+          <div class="tray-menu-mockup">
+            <div class="tray-item bold" onclick="alert('Opening Dashboard...')">Open Dashboard</div>
+            <div class="tray-divider"></div>
+            <div class="tray-item" id="tray-item-restart" onclick="simulateRestart()">Restart Server</div>
+            <div class="tray-item" id="tray-item-toggle" onclick="toggleServer()">Stop Server</div>
+            <div class="tray-divider"></div>
+            <div class="tray-item" onclick="alert('Restoring window from tray...')">Show Console</div>
+            <div class="tray-item" onclick="alert('Application completely terminated.')">Exit OmniRoute Console</div>
           </div>
-          <div class="shot-body">
-            <img src="assets/screenshots/stopped.png" alt="Server Stopped Preview" class="shot-img">
+
+          <div class="sim-toolbar">
+            <button class="btn-sim-trigger" onclick="setOnlineState()">Force Online</button>
+            <button class="btn-sim-trigger" onclick="setOfflineState()">Force Offline</button>
+            <button class="btn-sim-trigger" onclick="simulateUpdate()">Simulate Update</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Features Grid -->
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🔕</div>
-        <div class="feature-title">Zero Console Windows</div>
-        <div class="feature-desc">Spawns OmniRoute in detached background mode with Windows System Tray icon enabled (<code>omniroute serve --tray</code>). No streaming console windows cluttering your taskbar.</div>
-      </div>
+    <!-- Visual Screenshots -->
+    <section class="screenshots-panel">
+      <div class="section-eyebrow">Interface Preview</div>
+      <h2 class="section-heading">Native Windows Typography &amp; Crisp Graphics</h2>
+      <p class="section-sub">Compiled native WinForms interface with high-DPI multi-resolution iconography:</p>
 
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <div class="feature-title">Instant Socket Probing</div>
-        <div class="feature-desc">Asynchronous non-blocking loopback TCP check detects whether the server on port <code>20128</code> is already active or newly started within 50 milliseconds.</div>
-      </div>
+      <div class="shot-grid">
+        <div class="shot-card">
+          <div class="shot-card-header">
+            <h4>🟢 Online State &bull; Live Latency Ping</h4>
+            <span class="pill" style="color:var(--green-text); border-color:var(--green-border)">Active</span>
+          </div>
+          <div class="shot-img-container">
+            <img src="assets/screenshots/running.png" alt="Running State Preview">
+          </div>
+        </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">🔄</div>
-        <div class="feature-title">Safe Restart & Stop</div>
-        <div class="feature-desc">Terminates background instances cleanly, waits for the socket port release, and restarts with tray presence without leaving orphan Node.js background zombies.</div>
-      </div>
+        <div class="shot-card">
+          <div class="shot-card-header">
+            <h4>🟡 Connecting Probe &bull; Background Subprocess Launch</h4>
+            <span class="pill" style="color:var(--amber-text); border-color:var(--amber-border)">Connecting</span>
+          </div>
+          <div class="shot-img-container">
+            <img src="assets/screenshots/starting.png" alt="Starting State Preview">
+          </div>
+        </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">⏱️</div>
-        <div class="feature-title">Smart 5s Countdown</div>
-        <div class="feature-desc">If the server is confirmed healthy, the launcher window automatically closes in 5 seconds. Moving or hovering your mouse over any control immediately pauses the timer.</div>
+        <div class="shot-card">
+          <div class="shot-card-header">
+            <h4>🔴 Offline Standby &bull; Single-Click Start</h4>
+            <span class="pill" style="color:var(--red-text); border-color:var(--red-border)">Standby</span>
+          </div>
+          <div class="shot-img-container">
+            <img src="assets/screenshots/stopped.png" alt="Stopped State Preview">
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="feature-card">
-        <div class="feature-icon">🎨</div>
-        <div class="feature-title">High-DPI Multi-Res Icon</div>
-        <div class="feature-desc">Includes 7 standard resolutions (16x16 to 256x256) embedded directly into the PE header, guaranteeing crisp rendering on 100%, 125%, 150%, and 200% DPI displays.</div>
-      </div>
+    <!-- Architecture & System Design -->
+    <section class="arch-panel">
+      <div class="section-eyebrow">System Architecture</div>
+      <h2 class="section-heading">Decoupled Subprocess Execution</h2>
+      <p class="section-sub">OmniRoute Console communicates via asynchronous TCP sockets, ensuring no terminal window clutter or hangs.</p>
 
-      <div class="feature-card">
-        <div class="feature-icon">🪶</div>
-        <div class="feature-title">Zero External Runtime</div>
-        <div class="feature-desc">Pure native C# compiled via the standard Windows built-in <code>csc.exe</code> (.NET 4.5+). Requires zero external frameworks or Node.js runtime to execute the launcher.</div>
+      <pre class="arch-pre">
+               +--------------------------------------------+
+               |  OmniRoute Console (64 KB Native PE Win32) |
+               +--------------------------------------------+
+                                     |
+               +---------------------+----------------------+
+               |                                            |
+               v                                            v
+     [Non-Blocking TCP Socket]                    [Detached Subprocess]
+     Probes 127.0.0.1:20128                       Spawns: omniroute serve --tray
+     - Sub-35ms round-trip ping                   - Environment PATH enriched
+     - Real-time latency tracking                 - No persistent console windows
+               |                                            |
+               v                                            v
+     [Windows System Tray]                       [Default Web Browser]
+     - Right-click context menu                  Direct to http://localhost:20128/home
+     - Online / Offline tooltip
+      </pre>
+
+      <table class="shortcuts-table">
+        <thead>
+          <tr>
+            <th>Shortcut</th>
+            <th>Target Action</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd>Enter</kbd></td>
+            <td>Open Dashboard</td>
+            <td>Launches your default browser straight to <code>http://localhost:20128/home</code>.</td>
+          </tr>
+          <tr>
+            <td><kbd>Space</kbd></td>
+            <td>Toggle State</td>
+            <td>Starts or stops the OmniRoute background service cleanly.</td>
+          </tr>
+          <tr>
+            <td><kbd>Esc</kbd></td>
+            <td>Send to Tray</td>
+            <td>Hides window to tray without terminating active routes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Feature Matrix -->
+    <section class="features-panel">
+      <div class="section-eyebrow">Key Capabilities</div>
+      <h2 class="section-heading">Engineered for Developers</h2>
+      <p class="section-sub">Zero bloat, zero background telemetry, and zero unneeded runtime layers.</p>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon-title">
+            <span class="feature-icon">🪟</span>
+            <h3>Native Win32 Binary</h3>
+          </div>
+          <p>Under 70 KB in size. Built with C# 5 and native Windows <code>csc.exe</code>. Runs on any Windows 10 or 11 system out of the box.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-title">
+            <span class="feature-icon">🔕</span>
+            <h3>System Tray Controller</h3>
+          </div>
+          <p>Never litters your taskbar. Right-click the purple tray icon to trigger restarts, toggle server power, or launch the browser dashboard.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-title">
+            <span class="feature-icon">⚡</span>
+            <h3>Live Ping Probing</h3>
+          </div>
+          <p>Non-blocking asynchronous TCP socket polling measures exact loopback latency in milliseconds without freezing UI rendering.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-title">
+            <span class="feature-icon">⏱️</span>
+            <h3>5s Smart Auto-Close</h3>
+          </div>
+          <p>If healthy on startup, automatically minimizes to the tray in 5 seconds. Moving or hovering the cursor over any button instantly cancels the timer.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-title">
+            <span class="feature-icon">🔄</span>
+            <h3>Auto-Update Detection</h3>
+          </div>
+          <p>Asynchronously checks GitHub releases in the background and displays a non-intrusive update indicator when a newer build is available.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-title">
+            <span class="feature-icon">🎨</span>
+            <h3>High-DPI Multi-Res Icon</h3>
+          </div>
+          <p>Embedded 7-resolution ICO file with Windows Explorer Shell P/Invoke refresh (<code>SHChangeNotify</code>) for crisp icons at all scaling factors.</p>
+        </div>
       </div>
-    </div>
+    </section>
 
     <!-- Footer -->
     <footer>
-      <p>OmniRoute Console is open-source software licensed under the <a href="LICENSE">MIT License</a>.</p>
-      <p style="margin-top: 8px;">Created with ❤️ by <a href="https://github.com/krishna-techhub" target="_blank">krishna-techhub</a> · Hosted on GitHub Pages.</p>
+      <p>OmniRoute Console is open-source software under the <a href="LICENSE">MIT License</a>.</p>
+      <p style="margin-top: 8px;">Maintained by <a href="https://github.com/krishna-techhub" target="_blank">krishna-techhub</a> &bull; Hosted on GitHub Pages.</p>
     </footer>
 
   </div>
 
   <script>
-    function switchTab(tabName, btn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + tabName).classList.add('active');
+    function switchDeployTab(tabId, el) {
+      document.querySelectorAll('.tab-trigger').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
     }
 
-    function copyCode(elementId, btn) {
-      const code = document.getElementById(elementId).innerText;
-      navigator.clipboard.writeText(code).then(() => {
-        const orig = btn.innerText;
+    function copySnippet(elementId, btn) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const prev = btn.innerText;
         btn.innerText = 'Copied! ✓';
         btn.classList.add('copied');
         setTimeout(() => {
-          btn.innerText = orig;
+          btn.innerText = prev;
           btn.classList.remove('copied');
-        }, 2200);
+        }, 2000);
       });
+    }
+
+    // Interactive Simulator Logic
+    let isRunning = true;
+
+    function setOnlineState() {
+      isRunning = true;
+      const status = document.getElementById('sim-status');
+      const endpoint = document.getElementById('sim-endpoint');
+      const btnToggle = document.getElementById('sim-btn-toggle');
+      const btnRestart = document.getElementById('sim-btn-restart');
+      const trayToggle = document.getElementById('tray-item-toggle');
+      const trayTooltip = document.getElementById('sim-tray-tooltip');
+
+      status.innerText = 'RUNNING';
+      status.className = 'win-status-badge';
+      endpoint.innerText = '127.0.0.1 : 20128 • 3ms latency';
+      btnToggle.innerText = 'Stop';
+      btnToggle.className = 'win-btn-action win-btn-danger';
+      btnRestart.disabled = false;
+      trayToggle.innerText = 'Stop Server';
+      trayTooltip.innerText = 'OmniRoute: Online (3ms)';
+    }
+
+    function setOfflineState() {
+      isRunning = false;
+      const status = document.getElementById('sim-status');
+      const endpoint = document.getElementById('sim-endpoint');
+      const btnToggle = document.getElementById('sim-btn-toggle');
+      const btnRestart = document.getElementById('sim-btn-restart');
+      const trayToggle = document.getElementById('tray-item-toggle');
+      const trayTooltip = document.getElementById('sim-tray-tooltip');
+
+      status.innerText = 'STOPPED';
+      status.className = 'win-status-badge stopped';
+      endpoint.innerText = '127.0.0.1 : 20128 • Offline';
+      btnToggle.innerText = 'Start';
+      btnToggle.className = 'win-btn-action win-btn-primary';
+      btnRestart.disabled = true;
+      trayToggle.innerText = 'Start Server';
+      trayTooltip.innerText = 'OmniRoute: Offline';
+    }
+
+    function toggleServer() {
+      if (isRunning) setOfflineState();
+      else setOnlineState();
+    }
+
+    function simulateRestart() {
+      const status = document.getElementById('sim-status');
+      status.innerText = 'RESTARTING...';
+      status.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      status.style.background = 'rgba(245, 158, 11, 0.15)';
+      status.style.color = '#fbbf24';
+
+      setTimeout(() => {
+        setOnlineState();
+      }, 900);
+    }
+
+    function simulateUpdate() {
+      const sub = document.getElementById('sim-subtitle');
+      sub.innerHTML = '<span style="color:#818cf8; font-weight:600; cursor:pointer;">Update v1.1.0 available • Click to view</span>';
     }
   </script>
 </body>
