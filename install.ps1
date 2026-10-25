@@ -100,28 +100,39 @@ if (-not $iconObtained) {
 # 4. Procure executable binary
 Write-Host "[2/4] Procuring OmniRoute Console executable..." -ForegroundColor Cyan
 $binaryObtained = $false
-$releaseUrl = "https://github.com/krishna-techhub/OmniRoute-Console/releases/latest/download/OmniRouteConsole.exe"
 
-# Attempt download from GitHub Releases
-try {
-    Write-Host "      Attempting download from GitHub release channel..." -ForegroundColor DarkGray
-    Invoke-WebRequest -Uri $releaseUrl -OutFile $targetExe -UseBasicParsing -TimeoutSec 20
-    if ((Test-Path $targetExe) -and ((Get-Item $targetExe).Length -gt 2048)) {
-        $binaryObtained = $true
-        Write-Host "      Pre-built binary downloaded successfully." -ForegroundColor Green
-    } else {
+$downloadUrls = @(
+    "https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole.exe",
+    "https://github.com/krishna-techhub/OmniRoute-Console/releases/latest/download/OmniRouteConsole.exe"
+)
+
+foreach ($url in $downloadUrls) {
+    if ($binaryObtained) { break }
+    try {
+        Write-Host "      Attempting download from $url..." -ForegroundColor DarkGray
+        Invoke-WebRequest -Uri $url -OutFile $targetExe -UseBasicParsing -TimeoutSec 15
+        if ((Test-Path $targetExe) -and ((Get-Item $targetExe).Length -gt 2048)) {
+            $binaryObtained = $true
+            Write-Host "      Pre-built binary downloaded successfully." -ForegroundColor Green
+            break
+        } else {
+            if (Test-Path $targetExe) { Remove-Item $targetExe -Force -ErrorAction SilentlyContinue }
+        }
+    } catch {
+        Write-Host "      Download attempt failed ($($_.Exception.Message))." -ForegroundColor DarkGray
         if (Test-Path $targetExe) { Remove-Item $targetExe -Force -ErrorAction SilentlyContinue }
     }
-} catch {
-    Write-Host "      Pre-built binary not yet on release channel ($($_.Exception.Message))." -ForegroundColor DarkGray
-    if (Test-Path $targetExe) { Remove-Item $targetExe -Force -ErrorAction SilentlyContinue }
 }
 
-# Fallback: Check local build output or compile from local src/*.cs
+# Fallback 1: Check local build output
 if (-not $binaryObtained) {
     $localBin = $null
-    if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "bin\OmniRouteConsole.exe"))) {
+    if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "dist\OmniRouteConsole.exe"))) {
+        $localBin = Join-Path $PSScriptRoot "dist\OmniRouteConsole.exe"
+    } elseif ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "bin\OmniRouteConsole.exe"))) {
         $localBin = Join-Path $PSScriptRoot "bin\OmniRouteConsole.exe"
+    } elseif (Test-Path "dist\OmniRouteConsole.exe") {
+        $localBin = (Resolve-Path "dist\OmniRouteConsole.exe").Path
     } elseif (Test-Path "bin\OmniRouteConsole.exe") {
         $localBin = (Resolve-Path "bin\OmniRouteConsole.exe").Path
     }
@@ -130,24 +141,49 @@ if (-not $binaryObtained) {
         Write-Host "      Copying locally built binary ($localBin)..." -ForegroundColor Cyan
         Copy-Item -Path $localBin -Destination $targetExe -Force
         $binaryObtained = $true
-    } else {
-        Write-Host "      Attempting fallback compilation with native .NET csc.exe..." -ForegroundColor Cyan
-        $cscCandidates = @(
-            "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe",
-            "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"
-        )
-        $cscExe = $cscCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+    }
+}
 
-        $srcDir = $null
-        if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "src"))) {
-            $srcDir = Join-Path $PSScriptRoot "src"
-        } elseif (Test-Path "src") {
-            $srcDir = (Resolve-Path "src").Path
-        }
+# Fallback 2: Compile on-the-fly with native .NET csc.exe (fetching sources if needed)
+if (-not $binaryObtained) {
+    Write-Host "      Attempting compilation with native Windows .NET csc.exe..." -ForegroundColor Cyan
+    $cscCandidates = @(
+        "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe",
+        "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"
+    )
+    $cscExe = $cscCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
 
-        if ($cscExe -and $srcDir -and (Test-Path $srcDir)) {
-            $csFiles = @(Get-ChildItem -Path $srcDir -Filter "*.cs" -Recurse | ForEach-Object { $_.FullName })
-            if ($csFiles.Count -gt 0) {
+    if ($cscExe) {
+        $tempBuildDir = Join-Path $env:TEMP "OmniRouteConsole-Build-$([System.Guid]::NewGuid().ToString('N').Substring(0,8))"
+        New-Item -ItemType Directory -Path $tempBuildDir -Force | Out-Null
+        try {
+            $sourceFiles = @("Program.cs", "LauncherForm.cs", "ServerManager.cs", "UITheme.cs")
+            $downloadedSources = @()
+            $srcBaseUrl = "https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/src"
+
+            # Check if local src directory exists first
+            $localSrc = $null
+            if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "src"))) {
+                $localSrc = Join-Path $PSScriptRoot "src"
+            } elseif (Test-Path "src") {
+                $localSrc = (Resolve-Path "src").Path
+            }
+
+            foreach ($file in $sourceFiles) {
+                $destFile = Join-Path $tempBuildDir $file
+                if ($localSrc -and (Test-Path (Join-Path $localSrc $file))) {
+                    Copy-Item -Path (Join-Path $localSrc $file) -Destination $destFile -Force
+                    $downloadedSources += $destFile
+                } else {
+                    $fileUrl = "$srcBaseUrl/$file"
+                    Invoke-WebRequest -Uri $fileUrl -OutFile $destFile -UseBasicParsing -TimeoutSec 10
+                    if (Test-Path $destFile) {
+                        $downloadedSources += $destFile
+                    }
+                }
+            }
+
+            if ($downloadedSources.Count -eq $sourceFiles.Count) {
                 $compileArgs = @(
                     "/target:winexe",
                     "/platform:x64",
@@ -157,21 +193,27 @@ if (-not $binaryObtained) {
                 if (Test-Path $targetIco) {
                     $compileArgs += "/win32icon:`"$targetIco`""
                 }
-                $compileArgs += ($csFiles | ForEach-Object { "`"$_`"" })
+                $compileArgs += ($downloadedSources | ForEach-Object { "`"$_`"" })
 
                 $cscProcess = Start-Process -FilePath $cscExe -ArgumentList ($compileArgs -join " ") -Wait -NoNewWindow -PassThru
                 if ($cscProcess.ExitCode -eq 0 -and (Test-Path $targetExe)) {
                     $binaryObtained = $true
-                    Write-Host "      Compiled OmniRouteConsole.exe successfully." -ForegroundColor Green
+                    Write-Host "      Compiled OmniRouteConsole.exe successfully on this machine." -ForegroundColor Green
                 } else {
                     Write-Warning "Compilation failed with exit code $($cscProcess.ExitCode)."
                 }
             } else {
-                Write-Warning "No .cs source files found in $srcDir to compile."
+                Write-Warning "Could not fetch all source files from GitHub."
             }
-        } else {
-            Write-Warning "Compiler or source directory not found for local fallback compilation."
+        } catch {
+            Write-Warning "On-the-fly compilation failed: $($_.Exception.Message)"
+        } finally {
+            if (Test-Path $tempBuildDir) {
+                Remove-Item -Path $tempBuildDir -Recurse -Force -ErrorAction SilentlyContinue
+            }
         }
+    } else {
+        Write-Warning "Native csc.exe compiler not found."
     }
 }
 

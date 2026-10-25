@@ -23,7 +23,7 @@ Choose your preferred installation method:
 
 ### 📦 Standalone Setup Wizard (.exe) *(Recommended)*
 Download and run the standalone Windows GUI setup wizard:
-👉 **[Download OmniRouteConsole-Setup.exe](https://github.com/krishna-techhub/OmniRoute-Console/releases/latest/download/OmniRouteConsole-Setup.exe)** *(~150 KB, Zero Dependencies, Offline Installer)*
+👉 **[Download OmniRouteConsole-Setup.exe](https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe)** *(~150 KB, Zero Dependencies, Offline Installer)*
 
 ---
 

@@ -3,6 +3,8 @@ obj/
 *.exe
 *.pdb
 *.zip
+!dist/*.exe
+!dist/*.zip
 .superpowers/
 .vs/
 Thumbs.db
