@@ -25,7 +25,20 @@ Choose the deployment method that fits your workflow:
 ### Option 1: Standalone Windows Setup Wizard *(Recommended)*
 Download and launch the zero-dependency graphical installer (~160 KB). It extracts the embedded application payload, registers Desktop and Start Menu shortcuts, and flushes the Windows Explorer icon cache:
 
-👉 **[Download OmniRouteConsole-Setup.exe](https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe)**
+<p align="left">
+  <a href="https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe">
+    <img src="https://img.shields.io/badge/Download_Setup_Wizard-v1.0.0_(160_KB)-4F46E5?style=for-the-badge&logo=windows&logoColor=white" height="44" alt="Download OmniRouteConsole-Setup.exe" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole.exe">
+    <img src="https://img.shields.io/badge/Download_Standalone_EXE-64_KB-10B981?style=for-the-badge&logo=windows&logoColor=white" height="44" alt="Download OmniRouteConsole.exe" />
+  </a>
+</p>
+
+| Binary Package | Type | Architecture | File Size | Direct Download Link |
+| :--- | :--- | :--- | :--- | :--- |
+| **`OmniRouteConsole-Setup.exe`** | GUI Setup Wizard *(Recommended)* | Windows 10 / 11 (x64) | **~160 KB** | [**⬇️ Download Setup.exe**](https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe) |
+| **`OmniRouteConsole.exe`** | Standalone Portable Executable | Windows 10 / 11 (x64) | **~64 KB** | [**⬇️ Download Binary.exe**](https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole.exe) |
 
 ---
 

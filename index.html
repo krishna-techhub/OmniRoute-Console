@@ -206,6 +206,228 @@
       line-height: 1.5;
     }
 
+    /* Hero CTA Group */
+    .hero-cta-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 8px 24px -4px rgba(99, 102, 241, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-hero-primary:hover {
+      background: linear-gradient(135deg, #7174fa 0%, #4f46e5 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px -4px rgba(99, 102, 241, 0.6), 0 4px 8px rgba(0, 0, 0, 0.4);
+      color: #ffffff;
+    }
+
+    .btn-hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      color: var(--text-2);
+      text-decoration: none;
+      padding: 13px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid var(--border-strong);
+      transition: all 0.2s ease;
+    }
+
+    .btn-hero-secondary:hover {
+      background: var(--surface-3);
+      border-color: var(--border-focus);
+      color: var(--text-1);
+      transform: translateY(-1px);
+    }
+
+    /* Enhanced Setup Tab Download Cards */
+    .download-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .download-card-featured {
+      background: linear-gradient(180deg, #131728 0%, #0d101d 100%);
+      border: 1px solid #323b5c;
+      border-radius: 10px;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-card-featured::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
+    }
+
+    .download-card-alt {
+      background: var(--surface-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .dl-badge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .dl-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: #1e2238;
+      border: 1px solid #363e63;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #818cf8;
+      flex-shrink: 0;
+    }
+
+    .dl-title-text h3 {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--text-1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .dl-tag-recommended {
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dl-title-text p {
+      font-size: 0.84rem;
+      color: var(--text-3);
+      line-height: 1.45;
+    }
+
+    .btn-download-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 13px 26px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .btn-download-hero:hover {
+      background: linear-gradient(135deg, #7174fa 0%, #4f46e5 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(99, 102, 241, 0.55);
+      color: #ffffff;
+    }
+
+    .btn-download-alt {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      color: var(--text-2);
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.86rem;
+      border: 1px solid var(--border-strong);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-download-alt:hover {
+      background: var(--surface-3);
+      border-color: var(--brand);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Simulator Toast Banner */
+    .sim-toast {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%) translateY(25px);
+      background: #1a1d30;
+      border: 1px solid var(--brand);
+      color: #f1f5f9;
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 20;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sim-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     .btn-download-primary {
       display: inline-flex;
       align-items: center;
@@ -731,6 +953,19 @@
         <span class="pill"><strong>Win 10/11</strong> x64 Native</span>
         <a href="https://github.com/krishna-techhub/OmniRoute-Console" class="pill" target="_blank">⭐ GitHub Repository</a>
       </div>
+
+      <div class="hero-cta-group">
+        <a href="https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe" class="btn-hero-primary" download>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4h-13.051M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.951"/>
+          </svg>
+          <span>Download Setup Wizard (v1.0.0)</span>
+          <span style="font-size:0.75rem; opacity:0.85; font-weight:normal; background:rgba(255,255,255,0.18); padding:2px 8px; border-radius:4px;">160 KB</span>
+        </a>
+        <a href="#tab-setup" onclick="switchDeployTab('setup', document.querySelector('.tab-trigger')); document.querySelector('.deploy-panel').scrollIntoView({behavior:'smooth'});" class="btn-hero-secondary">
+          ⚡ All Installation Options
+        </a>
+      </div>
     </header>
 
     <!-- Installation & Deployment Matrix -->
@@ -744,17 +979,52 @@
 
       <!-- Tab: Setup Wizard -->
       <div id="tab-setup" class="tab-pane active">
-        <div class="setup-wizard-row">
-          <div class="setup-desc">
-            <h3>OmniRouteConsole-Setup.exe</h3>
-            <p>Single standalone graphical installer with zero external runtimes (~160 KB). Extracts embedded binary, creates crisp Desktop/Start Menu shortcuts, and flushes Windows Explorer icon cache.</p>
+        <div class="download-grid">
+          <!-- Featured: Setup Wizard -->
+          <div class="download-card-featured">
+            <div class="dl-badge-wrap">
+              <div class="dl-icon-box">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                  <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4h-13.051M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.951"/>
+                </svg>
+              </div>
+              <div class="dl-title-text">
+                <h3>
+                  <span>OmniRouteConsole-Setup.exe</span>
+                  <span class="dl-tag-recommended">Recommended</span>
+                </h3>
+                <p>Complete Windows Setup Wizard with Desktop &amp; Start Menu shortcuts, icon cache flush, and uninstaller support.</p>
+              </div>
+            </div>
+            <a href="https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe" class="btn-download-hero" download>
+              <svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v7.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 11.586V4a1 1 0 011-1z" clip-rule="evenodd" />
+                <path fill-rule="evenodd" d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+              </svg>
+              <span>Download Setup Wizard (~160 KB)</span>
+            </a>
           </div>
-          <a href="https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole-Setup.exe" class="btn-download-primary" download>
-            ⬇️ Download Setup Wizard
-          </a>
+
+          <!-- Alternative: Portable Executable -->
+          <div class="download-card-alt">
+            <div class="dl-badge-wrap">
+              <div class="dl-icon-box" style="width:40px; height:40px; background:var(--surface-2); border-color:var(--border-subtle); color:var(--text-3)">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                </svg>
+              </div>
+              <div class="dl-title-text">
+                <h3 style="font-size:0.96rem;">OmniRouteConsole.exe <span style="font-size:0.75rem; color:var(--text-4); font-weight:normal;">(Portable Standalone)</span></h3>
+                <p>Single standalone 64 KB executable. Zero installation required — run directly from any folder.</p>
+              </div>
+            </div>
+            <a href="https://raw.githubusercontent.com/krishna-techhub/OmniRoute-Console/main/dist/OmniRouteConsole.exe" class="btn-download-alt" download>
+              ⬇️ Download Portable (.exe &bull; 64 KB)
+            </a>
+          </div>
         </div>
         <div class="meta-note">
-          <span>💡 Direct standalone executable with embedded offline payload &bull; SHA256 verified build.</span>
+          <span>💡 Direct standalone binaries with offline embedded payload &bull; Clean SHA256 verified build.</span>
         </div>
       </div>
 
@@ -800,7 +1070,8 @@
 
       <div class="sim-grid">
         <!-- Mockup Window -->
-        <div class="win-frame">
+        <div class="win-frame" style="position: relative;">
+          <div id="sim-toast" class="sim-toast"></div>
           <div class="win-titlebar">
             <div class="win-title">
               <img src="assets/icon.svg" class="win-title-icon" alt="icon">
@@ -809,7 +1080,7 @@
             <div class="win-controls">
               <span class="win-btn"></span>
               <span class="win-btn"></span>
-              <span class="win-btn close" title="Minimizes to tray"></span>
+              <span class="win-btn close" title="Minimizes to tray" onclick="triggerSimToast('Hiding window to system tray...')"></span>
             </div>
           </div>
           <div class="win-content">
@@ -824,7 +1095,7 @@
             <div class="win-endpoint" id="sim-endpoint">127.0.0.1 : 20128 &bull; 3ms latency</div>
 
             <div class="win-actions">
-              <button class="win-btn-action win-btn-primary" onclick="alert('Navigating to http://localhost:20128/home')">Dashboard</button>
+              <button class="win-btn-action win-btn-primary" onclick="triggerSimToast('🌐 Navigating to http://localhost:20128/home')">Dashboard</button>
               <button class="win-btn-action win-btn-neutral" id="sim-btn-restart" onclick="simulateRestart()">Restart</button>
               <button class="win-btn-action win-btn-danger" id="sim-btn-toggle" onclick="toggleServer()">Stop</button>
             </div>
@@ -839,13 +1110,13 @@
           </div>
 
           <div class="tray-menu-mockup">
-            <div class="tray-item bold" onclick="alert('Opening Dashboard...')">Open Dashboard</div>
+            <div class="tray-item bold" onclick="triggerSimToast('🌐 Opening Dashboard (http://localhost:20128/home)')">Open Dashboard</div>
             <div class="tray-divider"></div>
             <div class="tray-item" id="tray-item-restart" onclick="simulateRestart()">Restart Server</div>
             <div class="tray-item" id="tray-item-toggle" onclick="toggleServer()">Stop Server</div>
             <div class="tray-divider"></div>
-            <div class="tray-item" onclick="alert('Restoring window from tray...')">Show Console</div>
-            <div class="tray-item" onclick="alert('Application completely terminated.')">Exit OmniRoute Console</div>
+            <div class="tray-item" onclick="triggerSimToast('🪟 Console window restored from tray')">Show Console</div>
+            <div class="tray-item" onclick="triggerSimToast('🛑 OmniRoute Console process exited')">Exit OmniRoute Console</div>
           </div>
 
           <div class="sim-toolbar">
@@ -1037,6 +1308,18 @@
 
     // Interactive Simulator Logic
     let isRunning = true;
+    let toastTimer = null;
+
+    function triggerSimToast(msg) {
+      const toast = document.getElementById('sim-toast');
+      if (!toast) return;
+      toast.innerText = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2200);
+    }
 
     function setOnlineState() {
       isRunning = true;
